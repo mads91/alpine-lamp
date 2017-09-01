@@ -2,15 +2,11 @@ FROM alpine:3.4
 MAINTAINER janes - https://github.com/hxer
 
 # Timezone
-ENV TIMEZONE            Asia/Shanghai
+ENV TIMEZONE            Europe/Copenhagen
 ENV PHP_MEMORY_LIMIT    512M
 ENV MAX_UPLOAD          50M
 ENV PHP_MAX_FILE_UPLOAD 200
 ENV PHP_MAX_POST        100M
-
-# 替换为阿里云的源，构建速度更快
-# RUN sed -i 's#dl-cdn\.alpinelinux\.org#mirrors\.aliyun\.com#' /etc/apk/repositories
-
 
 # install mysql, apache and php and php extensions, tzdata, wget
 RUN echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
@@ -93,5 +89,5 @@ WORKDIR /www
 EXPOSE 80
 EXPOSE 3306
 
-#VOLUME ["/www","/var/lib/mysql","/etc/mysql/"]
+VOLUME ["/www"]
 ENTRYPOINT ["/start.sh"]
