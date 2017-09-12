@@ -59,22 +59,23 @@ RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     sed -i "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" /etc/php5/php.ini && \
     sed -i "s|;*memory_limit =.*|memory_limit = ${PHP_MEMORY_LIMIT}|i" /etc/php5/php.ini && \
     sed -i "s|;*upload_max_filesize =.*|upload_max_filesize = ${MAX_UPLOAD}|i" /etc/php5/php.ini && \
+    sed -i "s|;*mysql.default_socket =.*|mysql.default_socket = /run/mysqld/mysqld.sock|i" /etc/php5/php.ini && \
     sed -i "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD}|i" /etc/php5/php.ini && \
     sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php5/php.ini && \
     sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= 0|i" /etc/php5/php.ini && \
     mkdir -p /run/apache2 && \
-    chown -R apache:apache /run/apache2 && \
-    mkdir /www && \
-    echo "<?php phpinfo(); ?>" > /www/index.php && \
-    chown -R apache:apache /www
+    chown -R apache:apache /run/apache2
+#    mkdir /www && \
+#    echo "<?php phpinfo(); ?>" > /www/index.php && \
+#    chown -R apache:apache /www
 
 # Configure xdebug
-RUN echo "zend_extension=xdebug.so" > /etc/php5/conf.d/xdebug.ini && \
-    echo -e "\n[XDEBUG]"  >> /etc/php5/conf.d/xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /etc/php5/conf.d/xdebug.ini && \
-    echo "xdebug.remote_connect_back=1" >> /etc/php5/conf.d/xdebug.ini && \
-    echo "xdebug.idekey=PHPSTORM" >> /etc/php5/conf.d/xdebug.ini && \
-    echo "xdebug.remote_log=\"/tmp/xdebug.log\"" >> /etc/php5/conf.d/xdebug.ini
+#RUN echo "zend_extension=xdebug.so" > /etc/php5/conf.d/xdebug.ini && \
+#    echo -e "\n[XDEBUG]"  >> /etc/php5/conf.d/xdebug.ini && \
+#    echo "xdebug.remote_enable=1" >> /etc/php5/conf.d/xdebug.ini && \
+#    echo "xdebug.remote_connect_back=1" >> /etc/php5/conf.d/xdebug.ini && \
+#    echo "xdebug.idekey=PHPSTORM" >> /etc/php5/conf.d/xdebug.ini && \
+#    echo "xdebug.remote_log=\"/tmp/xdebug.log\"" >> /etc/php5/conf.d/xdebug.ini
 
 #start apache
 RUN echo "#!/bin/sh" > /start.sh && \
@@ -89,5 +90,6 @@ WORKDIR /www
 EXPOSE 80
 EXPOSE 3306
 
-VOLUME ["/www"]
+VOLUME ["/www","/var/lib/mysql","/etc/mysql/"]
+
 ENTRYPOINT ["/start.sh"]
