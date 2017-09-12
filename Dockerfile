@@ -81,7 +81,7 @@ RUN curl -sS https://getcomposer.org/installer | \
 RUN echo "#!/bin/sh" > /start.sh && \
     echo "httpd" >> /start.sh && \
     echo "nohup mysqld --skip-grant-tables --bind-address 0.0.0.0 --user mysql > /dev/null 2>&1 &" >> /start.sh && \
-    echo "sleep 3 && mysql -uroot -e \"create database db;\"" >> /start.sh && \
+    echo "sleep 3 && mysql --host=localhost -uroot -e \"create database db;\"" >> /start.sh && \
     echo "tail -f /var/log/apache2/access.log" >> /start.sh && \
     chmod u+x /start.sh
 
